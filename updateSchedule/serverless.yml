@@ -1,0 +1,75 @@
+service: updateSchedule
+frameworkVersion: "3"
+
+custom:
+  region: us-east-1
+  awsAccountId: 700942841164
+  VpcId: vpc-58c94321
+  defaultSecurityGroup: sg-c07116b1
+  subnetId1: subnet-2d60ec01
+  subnetId1RouteTable: rtb-5efca026
+
+provider:
+  name: aws
+  vpc:
+    securityGroupIds:
+      - ${self:custom.defaultSecurityGroup}
+    subnetIds:
+      - ${self:custom.subnetId1}
+  runtime: nodejs18.x
+  profile: aws_tejas
+  region: ${self:custom.region}
+
+  # IAM Role statements will be attached to the lambda execution role
+  iam:
+    role:
+      statements:
+        # Allow lambda to write to log stream, put object to S3
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource:
+            - arn:aws:lambda:${self:custom.region}:${self:custom.awsAccountId}:function/${sls:stage}-updateSchedule
+
+        # Allow lambda to connect to RDS Postgres instance
+        - Effect: Allow
+          Action:
+            - rds-db:connect
+          Resource:
+            - arn:aws:lambda:${self:custom.region}:${self:custom.awsAccountId}:function/${sls:stage}-updateSchedule
+
+        # Allow lambda to upload mutation logs
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+          Resource:
+            - arn:aws:s3:::user-schedule-task-700942841164/*
+
+layers:
+  clayer:
+    path: ../clayer
+    compatibleRuntimes:
+      - nodejs18.x
+    description: The main lambda layer that will have all the required dependencies
+
+functions:
+  updateSchedule:
+    handler: ./build/index.handler
+    events:
+      - http:
+          path: schedule/{userId}
+          method: patch
+    name: ${sls:stage}-updateSchedule
+    description: Accepts user schedule from request and update it for the userId
+    layers:
+      - !Ref ClayerLambdaLayer
+    environment:
+      REGION: ${self:custom.region}
+      SCHEDULE_BUCKET_NAME: user-schedule-task-700942841164
+      DB_HOST: ${env:DB_HOST}
+      DB_PORT: ${env:DB_PORT}
+      DB_USER: ${env:DB_USER}
+      DB_PASSWORD: ${env:DB_PASSWORD}
+      DB_NAME: ${env:DB_NAME}

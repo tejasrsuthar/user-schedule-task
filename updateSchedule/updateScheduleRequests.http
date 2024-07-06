@@ -1,0 +1,156 @@
+@updateScheduleBaseUrl = https://fwoerldrll.execute-api.us-east-1.amazonaws.com/dev
+@createScheduleBaseUrl = https://jz20g80jvl.execute-api.us-east-1.amazonaws.com/dev
+
+### update schedule by userId
+PATCH {{updateScheduleBaseUrl}}/schedule/1
+Content-Type: application/json
+
+{
+  "schedule": {
+    "Monday": [{ "start": "10:00", "end": "17:00" }],
+    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
+    "Wednesday": [
+      { "start": "09:00", "end": "12:00" },
+      { "start": "13:00", "end": "17:00" }
+    ],
+    "Thursday": [{ "start": "09:00", "end": "17:00" }],
+    "Friday": [{ "start": "09:00", "end": "17:00" }],
+    "Saturday": [],
+    "Sunday": []
+  },
+  "timezone": "America/New_York"
+}
+
+### get schedule by userId - Verify above update is successfully executed or not
+GET {{createScheduleBaseUrl}}/schedule/1
+
+
+### update schedule by userId - empty or invalid request body
+PATCH {{updateScheduleBaseUrl}}/schedule/1
+Content-Type: application/json
+
+{
+
+}
+
+
+### update schedule by userId - missing timezone field
+PATCH {{updateScheduleBaseUrl}}/schedule/1
+Content-Type: application/json
+
+{
+  "schedule": {
+    "Monday": [{ "start": "10:00", "end": "17:00" }],
+    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
+    "Wednesday": [
+      { "start": "09:00", "end": "12:00" },
+      { "start": "13:00", "end": "17:00" }
+    ],
+    "Thursday": [{ "start": "09:00", "end": "17:00" }],
+    "Friday": [{ "start": "09:00", "end": "17:00" }],
+    "Saturday": [],
+    "Sunday": []
+  }
+}
+
+### update schedule by userId - missing weekday entry
+PATCH {{updateScheduleBaseUrl}}/schedule/1
+Content-Type: application/json
+
+{
+  "schedule": {
+    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
+    "Wednesday": [
+      { "start": "09:00", "end": "12:00" },
+      { "start": "13:00", "end": "17:00" }
+    ],
+    "Thursday": [{ "start": "09:00", "end": "17:00" }],
+    "Friday": [{ "start": "09:00", "end": "17:00" }],
+    "Saturday": [],
+    "Sunday": []
+  },
+  "timezone": "America/New_York"
+}
+
+### update schedule by userId - Invalid Timezone
+PATCH {{updateScheduleBaseUrl}}/schedule/2
+Content-Type: application/json
+
+{
+  "schedule": {
+    "Monday": [{ "start": "10:00", "end": "17:00" }],
+    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
+    "Wednesday": [
+      { "start": "09:00", "end": "12:00" },
+      { "start": "13:00", "end": "17:00" }
+    ],
+    "Thursday": [{ "start": "09:00", "end": "17:00" }],
+    "Friday": [{ "start": "09:00", "end": "17:00" }],
+    "Saturday": [],
+    "Sunday": []
+  },
+  "timezone": "InvalidAmerica/New_York"
+}
+
+
+### update user schedule (Invalid Time Period - Monday)
+PATCH {{updateScheduleBaseUrl}}/schedule/1
+Content-Type: application/json
+
+{
+  "schedule": {
+    "Monday": [{ "start": "INVALID:00", "end": "17:00" }],
+    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
+    "Wednesday": [
+      { "start": "09:00", "end": "12:00" },
+      { "start": "13:00", "end": "17:00" }
+    ],
+    "Thursday": [{ "start": "09:00", "end": "17:00" }],
+    "Friday": [{ "start": "09:00", "end": "17:00" }],
+    "Saturday": [],
+    "Sunday": []
+  },
+  "timezone": "America/New_York"
+}
+
+
+### update user schedule (Endtime not provided - Wednesday)
+PATCH {{updateScheduleBaseUrl}}/schedule/1
+Content-Type: application/json
+
+{
+  "schedule": {
+    "Monday": [{ "start": "09:00", "end": "17:00" }],
+    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
+    "Wednesday": [
+      { "start": "09:00" },
+      { "start": "13:00", "end": "17:00" }
+    ],
+    "Thursday": [{ "start": "09:00", "end": "17:00" }],
+    "Friday": [{ "start": "09:00", "end": "17:00" }],
+    "Saturday": [],
+    "Sunday": []
+  },
+  "timezone": "America/New_York"
+}
+
+### update user schedule 
+### (overlapping times of the day - end is after the next start - Wednesday)
+PATCH {{updateScheduleBaseUrl}}/schedule/1
+Content-Type: application/json
+
+{
+  "schedule": {
+    "Monday": [{ "start": "09:00", "end": "17:00" }],
+    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
+    "Wednesday": [
+      { "start": "09:00", "end": "15:00" },
+      { "start": "13:00", "end": "17:00" }
+    ],
+    "Thursday": [{ "start": "09:00", "end": "17:00" }],
+    "Friday": [{ "start": "09:00", "end": "17:00" }],
+    "Saturday": [],
+    "Sunday": []
+  },
+  "timezone": "America/New_York"
+}

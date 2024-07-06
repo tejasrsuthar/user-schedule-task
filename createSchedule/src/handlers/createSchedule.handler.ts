@@ -26,7 +26,7 @@ export const createScheduleHandler: APIGatewayProxyHandler = async (event) => {
     let request;
 
     try {
-      request = JSON.parse(event.body);
+      request = JSON.parse(event.body as string);
     } catch (error) {
       throw new BadRequestError("Invalid Request Body");
     }

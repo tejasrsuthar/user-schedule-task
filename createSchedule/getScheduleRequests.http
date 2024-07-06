@@ -1,0 +1,7 @@
+@baseUrl = https://jz20g80jvl.execute-api.us-east-1.amazonaws.com/dev
+
+### get schedule by userId
+GET {{baseUrl}}/schedule/1
+
+### get schedule by userId - no records found
+GET {{baseUrl}}/schedule/100

@@ -1,4 +1,4 @@
-type TimeSlot = {
+export type TimeSlot = {
   start: string;
   end: string;
 };
@@ -19,6 +19,12 @@ export type CreateSchedule = {
   schedule: Schedule;
   timezone: string;
 };
+
+export interface GetScheduleResponse {
+  userId: string;
+  schedule: Schedule;
+  timezone: string;
+}
 
 // Reference data
 const data = {

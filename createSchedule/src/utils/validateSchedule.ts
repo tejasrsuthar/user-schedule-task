@@ -1,5 +1,6 @@
+import { CreateSchedule, TimeSlot } from "../schema/create-schedule.schema";
+
 import { BadRequestError } from "../errors/badRequest.error";
-import { CreateSchedule } from "../schema/create-schedule.schema";
 import { listTimeZones } from "timezone-support";
 import { logger } from "./logger";
 import moment from "moment-timezone";
@@ -24,7 +25,7 @@ export const validateSchedule = (schedule: CreateSchedule) => {
       throw new BadRequestError(`Invalid day: ${day}`);
     }
 
-    const periods = schedule[day];
+    const periods = schedule[day] as unknown as TimeSlot[];
     for (let period of periods) {
       const { start, end } = period;
 

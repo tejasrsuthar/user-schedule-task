@@ -14,7 +14,7 @@ import { routes } from "./utils/routes";
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent,
   context
-): Promise<APIGatewayProxyResult | void> => {
+): Promise<APIGatewayProxyResult> => {
   try {
     await connect();
 

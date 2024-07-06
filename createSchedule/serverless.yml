@@ -62,6 +62,9 @@ functions:
           path: schedule
           method: post
       - http:
+          path: schedule/{userId}
+          method: get
+      - http:
           path: schedule/{userId}/check
           method: get
           request:

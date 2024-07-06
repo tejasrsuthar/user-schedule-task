@@ -1,0 +1,9 @@
+@baseUrl = https://jz20g80jvl.execute-api.us-east-1.amazonaws.com/dev
+
+### create user schedule
+POST {{baseUrl}}/user-schedule
+Content-Type: application/json
+
+{
+    "test":1
+}

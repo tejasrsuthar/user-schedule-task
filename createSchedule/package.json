@@ -1,0 +1,16 @@
+{
+  "name": "createschedule",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "del-cli ./build/*",
+    "build": "npm run clean && tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "del-cli": "^5.1.0"
+  }
+}

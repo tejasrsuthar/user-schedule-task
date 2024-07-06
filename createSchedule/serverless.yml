@@ -1,0 +1,54 @@
+service: createSchedule
+frameworkVersion: "3"
+
+custom:
+  region: us-east-1
+  awsAccountId: 700942841164
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  profile: aws_tejas
+  region: ${self:custom.region}
+
+  # IAM Role statements will be attached to the lambda execution role
+  iam:
+    role:
+      statements:
+        # Allow lambda to write to log stream, put object to S3
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource:
+            - arn:aws:lambda:${self:custom.region}:${self:custom.awsAccountId}:function/${sls:stage}-createSchedule
+
+layers:
+  clayer:
+    path: ../clayer
+    compatibleRuntimes:
+      - nodejs16.x
+    description: The main lambda layer that will have all the required dependencies
+
+functions:
+  createSchedule:
+    handler: ./build/index.handler
+    events:
+      - http:
+          path: user-schedule
+          method: post
+      - http:
+          path: user-schedule/{userId}/isonline
+          method: get
+          request:
+            parameters:
+              paths:
+                userId: true
+    name: ${sls:stage}-createSchedule
+    description: Accepts user schedule from request and store it in DB after validation
+    layers:
+      - !Ref ClayerLambdaLayer
+    environment:
+      REGION: ${self:custom.region}
+      SCHEDULE_BUCKET_NAME: user-schedule-task-700942841164

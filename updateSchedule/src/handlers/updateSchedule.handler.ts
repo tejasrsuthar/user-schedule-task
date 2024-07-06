@@ -51,19 +51,28 @@ export const updateScheduleHandler: APIGatewayProxyHandler = async (event) => {
 
     // insert user schedule
     logger.info("Updating schedule entry");
-    const updatedSchedule = await updateSchedule(request, parseInt(userId, 10));
-    logger.info("Schedule entry updated");
+    const [rowsAffected, updatedSchedule] = await updateSchedule(
+      request,
+      parseInt(userId, 10)
+    );
+    logger.info("Schedule entry updated. rowsAffected:", rowsAffected);
+    let opMessage;
 
-    // insert mutation log
-    const { bucketName, bucketKey } = getUpdateScheduleBucketDetails();
-    logger.info(`Inserting mutation log to ${bucketName}/${bucketKey}`);
-    await mutationLog(bucketName, bucketKey, updatedSchedule);
-    logger.info(`Inserting mutation log success`);
+    if (rowsAffected > 0) {
+      const { bucketName, bucketKey } = getUpdateScheduleBucketDetails();
+      logger.info(`Inserting mutation log to ${bucketName}/${bucketKey}`);
+      await mutationLog(bucketName, bucketKey, updatedSchedule);
+      logger.info(`Inserting mutation log success`);
+
+      opMessage = "User Schedule updated successfully";
+    } else {
+      opMessage = "No Records updated";
+    }
 
     return {
       statusCode: httpErrors.StatusCodes.OK,
       body: JSON.stringify({
-        message: `User Schedule updated successfully`,
+        message: opMessage,
         updatedSchedule,
       }),
     };

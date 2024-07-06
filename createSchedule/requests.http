@@ -1,11 +1,104 @@
 @baseUrl = https://jz20g80jvl.execute-api.us-east-1.amazonaws.com/dev
 
-### create user schedule
+### create user schedule (Valid Request)
 POST {{baseUrl}}/schedule
 Content-Type: application/json
 
 {
-    "test":1
+  "schedule": {
+    "Monday": [{ "start": "09:00", "end": "17:00" }],
+    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
+    "Wednesday": [
+      { "start": "09:00", "end": "12:00" },
+      { "start": "13:00", "end": "17:00" }
+    ],
+    "Thursday": [{ "start": "09:00", "end": "17:00" }],
+    "Friday": [{ "start": "09:00", "end": "17:00" }],
+    "Saturday": [],
+    "Sunday": []
+  },
+  "timezone": "America/New_York"
+}
+
+### create user schedule (Invalid Timezone)
+POST {{baseUrl}}/schedule
+Content-Type: application/json
+
+{
+  "schedule": {
+    "Monday": [{ "start": "09:00", "end": "17:00" }],
+    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
+    "Wednesday": [
+      { "start": "09:00", "end": "12:00" },
+      { "start": "13:00", "end": "17:00" }
+    ],
+    "Thursday": [{ "start": "09:00", "end": "17:00" }],
+    "Friday": [{ "start": "09:00", "end": "17:00" }],
+    "Saturday": [],
+    "Sunday": []
+  },
+  "timezone": "Invalid_America/New_York"
+}
+
+### create user schedule (Invalid Time Period - Monday)
+POST {{baseUrl}}/schedule
+Content-Type: application/json
+
+{
+  "schedule": {
+    "Monday": [{ "start": "INVALID:00", "end": "17:00" }],
+    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
+    "Wednesday": [
+      { "start": "09:00", "end": "12:00" },
+      { "start": "13:00", "end": "17:00" }
+    ],
+    "Thursday": [{ "start": "09:00", "end": "17:00" }],
+    "Friday": [{ "start": "09:00", "end": "17:00" }],
+    "Saturday": [],
+    "Sunday": []
+  },
+  "timezone": "Invalid_America/New_York"
+}
+
+### create user schedule (Endtime not provided - Wednesday)
+POST {{baseUrl}}/schedule
+Content-Type: application/json
+
+{
+  "schedule": {
+    "Monday": [{ "start": "09:00", "end": "17:00" }],
+    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
+    "Wednesday": [
+      { "start": "09:00" },
+      { "start": "13:00", "end": "17:00" }
+    ],
+    "Thursday": [{ "start": "09:00", "end": "17:00" }],
+    "Friday": [{ "start": "09:00", "end": "17:00" }],
+    "Saturday": [],
+    "Sunday": []
+  },
+  "timezone": "America/New_York"
+}
+
+### create user schedule 
+### (overlapping times of the day - end is after the next start - Wednesday)
+POST {{baseUrl}}/schedule
+Content-Type: application/json
+
+{
+  "schedule": {
+    "Monday": [{ "start": "09:00", "end": "17:00" }],
+    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
+    "Wednesday": [
+      { "start": "09:00", "end": "15:00" },
+      { "start": "13:00", "end": "17:00" }
+    ],
+    "Thursday": [{ "start": "09:00", "end": "17:00" }],
+    "Friday": [{ "start": "09:00", "end": "17:00" }],
+    "Saturday": [],
+    "Sunday": []
+  },
+  "timezone": "America/New_York"
 }
 
 ### Check if the user is online at a given timestamp

@@ -13,7 +13,7 @@ provider:
     subnetIds:
       - subnet-2d60ec01
       - subnet-f9d3e8c5
-  runtime: nodejs16.x
+  runtime: nodejs18.x
   profile: aws_tejas
   region: ${self:custom.region}
 
@@ -40,7 +40,7 @@ layers:
   clayer:
     path: ../clayer
     compatibleRuntimes:
-      - nodejs16.x
+      - nodejs18.x
     description: The main lambda layer that will have all the required dependencies
 
 functions:

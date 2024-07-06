@@ -12,6 +12,17 @@
   "dependencies": {
     "@types/aws-lambda": "^8.10.140",
     "@types/node": "^20.14.10",
-    "aws-lambda": "^1.0.7"
+    "aws-lambda": "^1.0.7",
+    "aws-sdk": "^2.1655.0",
+    "http-status-codes": "^2.3.0",
+    "lodash": "^4.17.21",
+    "moment-timezone": "^0.5.45",
+    "path-to-regexp": "^7.0.0",
+    "pg": "^8.12.0",
+    "sequelize": "^6.37.3",
+    "timezone-support": "^3.1.0",
+    "uuid": "^10.0.0",
+    "winston": "^3.13.0",
+    "zod": "^3.23.8"
   }
 }

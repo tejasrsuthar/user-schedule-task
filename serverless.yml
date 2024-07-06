@@ -21,7 +21,7 @@ resources:
     RDSPosgressInstance:
       Type: AWS::RDS::DBInstance
       Properties:
-        DBInstanceClass: db.t3.medium
+        DBInstanceClass: db.t3.micro
         Engine: postgres
         MasterUsername: ${env:RDS_MASTER_USERNAME}
         MasterUserPassword: ${env:RDS_MASTER_PASSWORD}

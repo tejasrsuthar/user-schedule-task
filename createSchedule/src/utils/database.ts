@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize";
+import { logger } from "./logger";
 
 const DB_HOST = process.env.DB_HOST!;
 const DB_PORT = parseInt(process.env.DB_PORT!, 10);
@@ -20,10 +21,10 @@ export const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
 
 export const connect = async () => {
   try {
-    console.log({ DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT });
     await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
+    await sequelize.sync();
+    logger.info("Connection has been established successfully.");
   } catch (error) {
-    console.error("Unable to connect to the database:", error);
+    logger.error("something went wrong:", error);
   }
 };

@@ -4,15 +4,18 @@ frameworkVersion: "3"
 custom:
   region: us-east-1
   awsAccountId: 700942841164
+  VpcId: vpc-58c94321
+  defaultSecurityGroup: sg-c07116b1
+  subnetId1: subnet-2d60ec01
+  subnetId1RouteTable: rtb-5efca026
 
 provider:
   name: aws
   vpc:
     securityGroupIds:
-      - sg-c07116b1
+      - ${self:custom.defaultSecurityGroup}
     subnetIds:
-      - subnet-2d60ec01
-      - subnet-f9d3e8c5
+      - ${self:custom.subnetId1}
   runtime: nodejs18.x
   profile: aws_tejas
   region: ${self:custom.region}
@@ -29,12 +32,20 @@ provider:
             - logs:PutLogEvents
           Resource:
             - arn:aws:lambda:${self:custom.region}:${self:custom.awsAccountId}:function/${sls:stage}-createSchedule
+
         # Allow lambda to connect to RDS Postgres instance
         - Effect: Allow
           Action:
             - rds-db:connect
           Resource:
             - arn:aws:lambda:${self:custom.region}:${self:custom.awsAccountId}:function/${sls:stage}-createSchedule
+
+        # Allow lambda to upload mutation logs
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+          Resource:
+            - arn:aws:s3:::user-schedule-task-700942841164/*
 
 layers:
   clayer:
@@ -69,3 +80,14 @@ functions:
       DB_USER: ${env:DB_USER}
       DB_PASSWORD: ${env:DB_PASSWORD}
       DB_NAME: ${env:DB_NAME}
+
+# create VPCEndpoint to access S3 from Lambda, as lambda is in VPC
+resources:
+  Resources:
+    S3VPCEndpoint:
+      Type: AWS::EC2::VPCEndpoint
+      Properties:
+        ServiceName: com.amazonaws.${self:custom.region}.s3
+        VpcId: ${self:custom.VpcId}
+        RouteTableIds:
+          - ${self:custom.subnetId1RouteTable}

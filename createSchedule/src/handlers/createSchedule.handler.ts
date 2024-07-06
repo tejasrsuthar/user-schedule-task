@@ -4,7 +4,9 @@ import { APIGatewayProxyHandler } from "aws-lambda";
 import { BadRequestError } from "../errors/badRequest.error";
 import { CreateSchedule } from "../schema/create-schedule.schema";
 import { Schedule } from "../models/schedule";
+import { getCreateScheduleBucketDetails } from "../utils/common";
 import { logger } from "../utils/logger";
+import { mutationLog } from "../utils/s3";
 
 async function createSchedule(scheduleData: CreateSchedule) {
   try {
@@ -18,10 +20,7 @@ async function createSchedule(scheduleData: CreateSchedule) {
   }
 }
 
-export const createScheduleHandler: APIGatewayProxyHandler = async (
-  event,
-  context
-) => {
+export const createScheduleHandler: APIGatewayProxyHandler = async (event) => {
   try {
     logger.info("incoming request:", event);
     let request;
@@ -33,11 +32,21 @@ export const createScheduleHandler: APIGatewayProxyHandler = async (
     }
 
     // schedule validation
+    logger.info("Validation request schedule");
     validateSchedule(request.schedule);
     validateTimezone(request.timezone);
+    logger.info("Schedule request validated");
 
     // insert user schedule
-    await createSchedule(request);
+    logger.info("Inserting schedule entry");
+    const newSchedule = await createSchedule(request);
+    logger.info("Schedule entry inserted");
+
+    // insert mutation log
+    const { bucketName, bucketKey } = getCreateScheduleBucketDetails();
+    logger.info(`Inserting mutation log to ${bucketName}/${bucketKey}`);
+    await mutationLog(bucketName, bucketKey, newSchedule);
+    logger.info(`Inserting mutation log success`);
 
     return {
       statusCode: 200,

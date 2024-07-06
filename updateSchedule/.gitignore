@@ -3,4 +3,3 @@ node_modules
 build
 # Serverless directories
 .serverless
-.env

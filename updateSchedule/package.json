@@ -1,5 +1,5 @@
 {
-  "name": "user-schedule-task",
+  "name": "updateschedule",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,8 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/aws-lambda": "^8.10.140",
-    "@types/node": "^20.14.10",
-    "aws-lambda": "^1.0.7"
+    "del-cli": "^5.1.0"
   }
 }

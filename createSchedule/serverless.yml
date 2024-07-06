@@ -7,6 +7,12 @@ custom:
 
 provider:
   name: aws
+  vpc:
+    securityGroupIds:
+      - sg-c07116b1
+    subnetIds:
+      - subnet-2d60ec01
+      - subnet-f9d3e8c5
   runtime: nodejs16.x
   profile: aws_tejas
   region: ${self:custom.region}
@@ -23,6 +29,12 @@ provider:
             - logs:PutLogEvents
           Resource:
             - arn:aws:lambda:${self:custom.region}:${self:custom.awsAccountId}:function/${sls:stage}-createSchedule
+        # Allow lambda to connect to RDS Postgres instance
+        - Effect: Allow
+          Action:
+            - rds-db:connect
+          Resource:
+            - arn:aws:lambda:${self:custom.region}:${self:custom.awsAccountId}:function/${sls:stage}-createSchedule
 
 layers:
   clayer:
@@ -36,10 +48,10 @@ functions:
     handler: ./build/index.handler
     events:
       - http:
-          path: user-schedule
+          path: schedule
           method: post
       - http:
-          path: user-schedule/{userId}/isonline
+          path: schedule/{userId}/check
           method: get
           request:
             parameters:
@@ -52,3 +64,8 @@ functions:
     environment:
       REGION: ${self:custom.region}
       SCHEDULE_BUCKET_NAME: user-schedule-task-700942841164
+      DB_HOST: ${env:DB_HOST}
+      DB_PORT: ${env:DB_PORT}
+      DB_USER: ${env:DB_USER}
+      DB_PASSWORD: ${env:DB_PASSWORD}
+      DB_NAME: ${env:DB_NAME}

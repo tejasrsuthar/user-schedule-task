@@ -1,10 +1,40 @@
-service: test
+service: common
 frameworkVersion: "3"
+
+custom:
+  defaultSgGroup: sg-c07116b1
 
 provider:
   name: aws
-  runtime: nodejs16.x
-  profile: tejas-sa-iam
+  runtime: nodejs18.x
+  profile: aws_tejas
 
-resources: # CloudFormation template syntax from here on.
+resources:
   Resources:
+    # S3 Bucket
+    userScheduleTaskBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: user-schedule-task-700942841164
+
+    # RDS Posgres
+    RDSPosgressInstance:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        DBInstanceClass: db.t3.medium
+        Engine: postgres
+        MasterUsername: ${env:RDS_MASTER_USERNAME}
+        MasterUserPassword: ${env:RDS_MASTER_PASSWORD}
+        AllocatedStorage: 20
+        DBName: userschedule
+
+  Outputs:
+    userScheduleTaskBucketArn:
+      Description: "Arn of the bucket"
+      Value:
+        Fn::GetAtt: [userScheduleTaskBucket, Arn]
+
+    RDSPosgressInstanceEndpoint:
+      Description: "Endpoint of the RDS Postgress Instance"
+      Value:
+        Fn::GetAtt: [RDSPosgressInstance, Endpoint.Address]

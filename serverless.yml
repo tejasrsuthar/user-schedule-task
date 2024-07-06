@@ -1,0 +1,10 @@
+service: test
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  profile: tejas-sa-iam
+
+resources: # CloudFormation template syntax from here on.
+  Resources:

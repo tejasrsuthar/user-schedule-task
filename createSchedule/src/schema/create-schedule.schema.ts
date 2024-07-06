@@ -1,44 +1,59 @@
+import * as yup from "yup";
+
+// Get the list of valid IANA timezones
+const { listTimeZones } = require("timezone-support");
+const validTimezones = listTimeZones();
+
+// Define the time format regex
+const timeFormatRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+// Define the time slot schema
+const timeSlotSchema = yup.object().shape({
+  start: yup
+    .string()
+    .matches(timeFormatRegex, "Invalid time format, should be HH:mm")
+    .required(),
+  end: yup
+    .string()
+    .matches(timeFormatRegex, "Invalid time format, should be HH:mm")
+    .required(),
+});
+
+// Define the daily schedule schema
+const dailyScheduleSchema = yup.array().of(timeSlotSchema).required();
+
+// Define the weekly schedule schema with required days
+const weeklyScheduleSchema = yup
+  .object()
+  .shape({
+    Monday: dailyScheduleSchema.required(),
+    Tuesday: dailyScheduleSchema.required(),
+    Wednesday: dailyScheduleSchema.required(),
+    Thursday: dailyScheduleSchema.required(),
+    Friday: dailyScheduleSchema.required(),
+    Saturday: dailyScheduleSchema.required(),
+    Sunday: dailyScheduleSchema.required(),
+  })
+  .required();
+
+// Define the main schema
+export const createScheduleSchema = yup.object().shape({
+  schedule: weeklyScheduleSchema.required(),
+  timezone: yup
+    .string()
+    .oneOf(validTimezones, "Invalid timezone")
+    .required("timezone field is required"),
+});
+
+export type CreateSchedule = yup.InferType<typeof createScheduleSchema>;
+
 export type TimeSlot = {
   start: string;
   end: string;
 };
 
-type DaySchedule = TimeSlot[];
-
-type Schedule = {
-  Monday: DaySchedule;
-  Tuesday: DaySchedule;
-  Wednesday: DaySchedule;
-  Thursday: DaySchedule;
-  Friday: DaySchedule;
-  Saturday: DaySchedule;
-  Sunday: DaySchedule;
-};
-
-export type CreateSchedule = {
-  schedule: Schedule;
-  timezone: string;
-};
-
 export interface GetScheduleResponse {
   userId: string;
-  schedule: Schedule;
+  schedule: CreateSchedule["schedule"];
   timezone: string;
 }
-
-// Reference data
-const data = {
-  schedule: {
-    Monday: [{ start: "09:00", end: "17:00" }],
-    Tuesday: [{ start: "13:00", end: "17:00" }],
-    Wednesday: [
-      { start: "09:00", end: "12:00" },
-      { start: "13:00", end: "17:00" },
-    ],
-    Thursday: [{ start: "09:00", end: "17:00" }],
-    Friday: [{ start: "09:00", end: "17:00" }],
-    Saturday: [],
-    Sunday: [],
-  },
-  timezone: "America/New_York",
-};

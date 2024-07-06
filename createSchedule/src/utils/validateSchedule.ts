@@ -1,7 +1,6 @@
 import { CreateSchedule, TimeSlot } from "../schema/create-schedule.schema";
 
 import { BadRequestError } from "../errors/badRequest.error";
-import { listTimeZones } from "timezone-support";
 import { logger } from "./logger";
 import moment from "moment-timezone";
 
@@ -52,14 +51,5 @@ export const validateSchedule = (schedule: CreateSchedule) => {
         throw new BadRequestError(`Overlapping times for day: ${day}`);
       }
     }
-  }
-};
-
-export const validateTimezone = (timezone: string) => {
-  logger.info("validateTimezone:", timezone);
-  const timeZones = listTimeZones();
-
-  if (!timeZones.includes(timezone)) {
-    throw new BadRequestError("Invalid Timezone");
   }
 };

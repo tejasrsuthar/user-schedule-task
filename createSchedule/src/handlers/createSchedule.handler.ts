@@ -1,12 +1,16 @@
-import { validateSchedule, validateTimezone } from "../utils/validateSchedule";
+import {
+  CreateSchedule,
+  createScheduleSchema,
+} from "../schema/create-schedule.schema";
+import { getCreateScheduleBucketDetails, httpErrors } from "../utils/common";
 
 import { APIGatewayProxyHandler } from "aws-lambda";
 import { BadRequestError } from "../errors/badRequest.error";
-import { CreateSchedule } from "../schema/create-schedule.schema";
 import { Schedule } from "../models/schedule";
-import { getCreateScheduleBucketDetails } from "../utils/common";
 import { logger } from "../utils/logger";
 import { mutationLog } from "../utils/s3";
+import { validateSchedule } from "../utils/validateSchedule";
+import { validateSchema } from "../utils/validateSchema";
 
 async function createSchedule(scheduleData: CreateSchedule) {
   try {
@@ -31,10 +35,14 @@ export const createScheduleHandler: APIGatewayProxyHandler = async (event) => {
       throw new BadRequestError("Invalid Request Body");
     }
 
+    // validation gates
+    await validateSchema(request, createScheduleSchema).catch((err) => {
+      throw new BadRequestError(err.errors);
+    });
+
     // schedule validation
     logger.info("Validation request schedule");
     validateSchedule(request.schedule);
-    validateTimezone(request.timezone);
     logger.info("Schedule request validated");
 
     // insert user schedule
@@ -49,7 +57,7 @@ export const createScheduleHandler: APIGatewayProxyHandler = async (event) => {
     logger.info(`Inserting mutation log success`);
 
     return {
-      statusCode: 200,
+      statusCode: httpErrors.StatusCodes.OK,
       body: JSON.stringify({
         message: `User Schedule added successfully`,
       }),

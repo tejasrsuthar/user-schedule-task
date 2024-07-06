@@ -57,7 +57,7 @@ Content-Type: application/json
     "Saturday": [],
     "Sunday": []
   },
-  "timezone": "Invalid_America/New_York"
+  "timezone": "America/New_York"
 }
 
 ### create user schedule (Endtime not provided - Wednesday)

@@ -65,7 +65,7 @@ export const checkScheduleHandler: APIGatewayProxyHandler = async (
     return {
       statusCode: httpErrors.StatusCodes.OK,
       body: JSON.stringify({
-        isUserOnline: isOnline,
+        status: isOnline ? "online" : "offline",
       }),
     };
   } catch (error) {

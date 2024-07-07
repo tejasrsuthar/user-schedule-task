@@ -1,7 +1,7 @@
-@baseUrl = https://jz20g80jvl.execute-api.us-east-1.amazonaws.com/dev
+@createScheduleBaseUrl = https://vfkbwzj1dc.execute-api.us-east-1.amazonaws.com/dev
 
 ### create user schedule (Valid Request)
-POST {{baseUrl}}/schedule
+POST {{createScheduleBaseUrl}}/schedule
 Content-Type: application/json
 
 {
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ### create user schedule (Invalid Timezone)
-POST {{baseUrl}}/schedule
+POST {{createScheduleBaseUrl}}/schedule
 Content-Type: application/json
 
 {
@@ -41,7 +41,7 @@ Content-Type: application/json
 }
 
 ### create user schedule (Invalid Time Period - Monday)
-POST {{baseUrl}}/schedule
+POST {{createScheduleBaseUrl}}/schedule
 Content-Type: application/json
 
 {
@@ -61,7 +61,7 @@ Content-Type: application/json
 }
 
 ### create user schedule (Endtime not provided - Wednesday)
-POST {{baseUrl}}/schedule
+POST {{createScheduleBaseUrl}}/schedule
 Content-Type: application/json
 
 {
@@ -82,7 +82,7 @@ Content-Type: application/json
 
 ### create user schedule 
 ### (overlapping times of the day - end is after the next start - Wednesday)
-POST {{baseUrl}}/schedule
+POST {{createScheduleBaseUrl}}/schedule
 Content-Type: application/json
 
 {

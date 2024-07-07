@@ -1,5 +1,5 @@
-@updateScheduleBaseUrl = https://fwoerldrll.execute-api.us-east-1.amazonaws.com/dev
-@createScheduleBaseUrl = https://jz20g80jvl.execute-api.us-east-1.amazonaws.com/dev
+@updateScheduleBaseUrl = https://pmljton2o8.execute-api.us-east-1.amazonaws.com/dev
+@createScheduleBaseUrl = https://vfkbwzj1dc.execute-api.us-east-1.amazonaws.com/dev
 
 ### update schedule by userId
 PATCH {{updateScheduleBaseUrl}}/schedule/1

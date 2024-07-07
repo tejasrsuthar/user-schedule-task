@@ -1,13 +1,22 @@
-service: common
+service: schedule-task-common
 frameworkVersion: "3"
-
-custom:
-  defaultSgGroup: sg-c07116b1
 
 provider:
   name: aws
   runtime: nodejs18.x
   profile: aws_tejas
+  region: ${env:REGION}
+  environment:
+    AWS_ACCOUNT_ID: ${env:AWS_ACCOUNT_ID}
+    RDS_MASTER_USERNAME: ${env:RDS_MASTER_USERNAME}
+    RDS_MASTER_PASSWORD: ${env:RDS_MASTER_PASSWORD}
+    REGION: ${env:REGION}
+    BUCKET_NAME: user-schedule-task-${env:AWS_ACCOUNT_ID}
+    DB_NAME: userschedule
+    VPC_ID: ${env:VPC_ID}
+    SUBNET_ID: ${env:SUBNET_ID}
+    SUBNET_ROUTE_TABLE_ID: ${env:SUBNET_ROUTE_TABLE_ID}
+    SECURITY_GROUP_ID: ${env:SECURITY_GROUP_ID}
 
 resources:
   Resources:
@@ -15,7 +24,7 @@ resources:
     userScheduleTaskBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: user-schedule-task-700942841164
+        BucketName: ${self:provider.environment.BUCKET_NAME}
 
     # RDS Posgres
     RDSPosgressInstance:
@@ -23,12 +32,33 @@ resources:
       Properties:
         DBInstanceClass: db.t3.micro
         Engine: postgres
-        MasterUsername: ${env:RDS_MASTER_USERNAME}
-        MasterUserPassword: ${env:RDS_MASTER_PASSWORD}
+        MasterUsername: ${self:provider.environment.RDS_MASTER_USERNAME}
+        MasterUserPassword: ${self:provider.environment.RDS_MASTER_PASSWORD}
         AllocatedStorage: 20
-        DBName: userschedule
+        DBName: ${self:provider.environment.DB_NAME}
+        PubliclyAccessible: true
+
+    S3VPCEndpoint:
+      Type: AWS::EC2::VPCEndpoint
+      Properties:
+        ServiceName: com.amazonaws.${self:provider.environment.REGION}.s3
+        VpcId: ${self:provider.environment.VPC_ID}
+        RouteTableIds:
+          - ${self:provider.environment.SUBNET_ROUTE_TABLE_ID}
 
   Outputs:
+    AwsAccountId:
+      Description: AccountId of the AWS Account
+      Value: ${self:provider.environment.AWS_ACCOUNT_ID}
+      Export:
+        Name: AwsAccountId
+
+    Region:
+      Description: Region value where all the resources are created
+      Value: !Ref "AWS::Region"
+      Export:
+        Name: Region
+
     userScheduleTaskBucketArn:
       Description: "Arn of the bucket"
       Value:
@@ -38,3 +68,59 @@ resources:
       Description: "Endpoint of the RDS Postgress Instance"
       Value:
         Fn::GetAtt: [RDSPosgressInstance, Endpoint.Address]
+      Export:
+        Name: DBHost
+
+    RdsDbName:
+      Description: Master database user name
+      Value: ${self:provider.environment.DB_NAME}
+      Export:
+        Name: RdsDbName
+
+    RdsMasterUserName:
+      Description: Master database user name
+      Value: ${self:provider.environment.RDS_MASTER_USERNAME}
+      Export:
+        Name: RdsMasterUserName
+
+    RdsMasterPassword:
+      Description: Master database password
+      Value: ${self:provider.environment.RDS_MASTER_PASSWORD}
+      Export:
+        Name: RdsMasterPassword
+
+    RdsDBPort:
+      Description: DB Port for the connection
+      Value: 5432
+      Export:
+        Name: RdsDBPort
+
+    S3Bucket:
+      Description: bucket name where we store the mutation logs
+      Value: ${self:provider.environment.BUCKET_NAME}
+      Export:
+        Name: Bucket
+
+    VpcId:
+      Description: VPC Id
+      Value: ${self:provider.environment.VPC_ID}
+      Export:
+        Name: VpcId
+
+    SubnetId:
+      Description: SubnetId
+      Value: ${self:provider.environment.SUBNET_ID}
+      Export:
+        Name: SubnetId
+
+    SubnetRouteTableId:
+      Description: SubnetRouteTableId
+      Value: ${self:provider.environment.SUBNET_ROUTE_TABLE_ID}
+      Export:
+        Name: SubnetRouteTableId
+
+    SecurityGroupId:
+      Description: SecurityGroupId
+      Value: ${self:provider.environment.SECURITY_GROUP_ID}
+      Export:
+        Name: SecurityGroupId

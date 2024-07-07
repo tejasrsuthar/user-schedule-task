@@ -60,6 +60,7 @@ export const createScheduleHandler: APIGatewayProxyHandler = async (event) => {
       statusCode: httpErrors.StatusCodes.OK,
       body: JSON.stringify({
         message: `User Schedule added successfully`,
+        newSchedule,
       }),
     };
   } catch (error) {

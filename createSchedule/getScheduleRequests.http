@@ -3,5 +3,6 @@
 ### get schedule by userId
 GET {{createScheduleBaseUrl}}/schedule/1
 
+###################################################################
 ### get schedule by userId - no records found
 GET {{createScheduleBaseUrl}}/schedule/100

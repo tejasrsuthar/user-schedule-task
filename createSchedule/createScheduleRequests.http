@@ -20,6 +20,12 @@ Content-Type: application/json
   "timezone": "America/New_York"
 }
 
+###################################################################
+### get schedule by userId
+GET {{createScheduleBaseUrl}}/schedule/1
+
+
+###################################################################
 ### create user schedule (Invalid Timezone)
 POST {{createScheduleBaseUrl}}/schedule
 Content-Type: application/json
@@ -40,6 +46,7 @@ Content-Type: application/json
   "timezone": "Invalid_America/New_York"
 }
 
+###################################################################
 ### create user schedule (Invalid Time Period - Monday)
 POST {{createScheduleBaseUrl}}/schedule
 Content-Type: application/json
@@ -60,6 +67,7 @@ Content-Type: application/json
   "timezone": "America/New_York"
 }
 
+###################################################################
 ### create user schedule (Endtime not provided - Wednesday)
 POST {{createScheduleBaseUrl}}/schedule
 Content-Type: application/json
@@ -80,6 +88,7 @@ Content-Type: application/json
   "timezone": "America/New_York"
 }
 
+###################################################################
 ### create user schedule 
 ### (overlapping times of the day - end is after the next start - Wednesday)
 POST {{createScheduleBaseUrl}}/schedule

@@ -1,10 +1,14 @@
 service: createSchedule
 frameworkVersion: "3"
 
+## known issue to get outer serverless.yml custom variables
+## @see: https://forum.serverless.com/t/unable-to-get-variables-when-files-are-in-different-folders/16390
+## need to take it form local folder .env
+
 custom:
-  region: us-east-1
-  accountId: 700942841164
-  bucketArn: "arn:aws:s3:::user-schedule-task-${self:custom.accountId}"
+  region: ${env:REGION}
+  accountId: ${env:AWS_ACCOUNT_ID}
+  bucketArn: "arn:aws:s3:::user-schedule-task-${self:custom.accountId}/*"
   lambdaArn: arn:aws:lambda:${self:custom.region}:${self:custom.accountId}:function/${sls:stage}-createSchedule
 
 provider:
@@ -17,8 +21,6 @@ provider:
     subnetIds:
       - Fn::ImportValue: SubnetId
   environment:
-    ACCOUNT_ID:
-      Fn::ImportValue: AwsAccountId
     SCHEDULE_BUCKET_NAME:
       Fn::ImportValue: Bucket
     DB_HOST:
@@ -31,8 +33,6 @@ provider:
       Fn::ImportValue: RdsMasterPassword
     DB_NAME:
       Fn::ImportValue: RdsDbName
-    REGION:
-      Fn::ImportValue: Region
 
   # IAM Role statements will be attached to the lambda execution role
   iam:
@@ -89,7 +89,7 @@ functions:
     layers:
       - !Ref ClayerLambdaLayer
     environment:
-      REGION: ${self:provider.environment.REGION}
+      REGION: ${self:custom.region}
       SCHEDULE_BUCKET_NAME: ${self:provider.environment.SCHEDULE_BUCKET_NAME}
       DB_HOST: ${self:provider.environment.DB_HOST}
       DB_PORT: ${self:provider.environment.DB_PORT}

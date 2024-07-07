@@ -36,7 +36,6 @@ resources:
         MasterUserPassword: ${self:provider.environment.RDS_MASTER_PASSWORD}
         AllocatedStorage: 20
         DBName: ${self:provider.environment.DB_NAME}
-        PubliclyAccessible: true
 
     S3VPCEndpoint:
       Type: AWS::EC2::VPCEndpoint
@@ -47,23 +46,6 @@ resources:
           - ${self:provider.environment.SUBNET_ROUTE_TABLE_ID}
 
   Outputs:
-    AwsAccountId:
-      Description: AccountId of the AWS Account
-      Value: ${self:provider.environment.AWS_ACCOUNT_ID}
-      Export:
-        Name: AwsAccountId
-
-    Region:
-      Description: Region value where all the resources are created
-      Value: !Ref "AWS::Region"
-      Export:
-        Name: Region
-
-    userScheduleTaskBucketArn:
-      Description: "Arn of the bucket"
-      Value:
-        Fn::GetAtt: [userScheduleTaskBucket, Arn]
-
     RDSPosgressInstanceEndpoint:
       Description: "Endpoint of the RDS Postgress Instance"
       Value:
@@ -102,7 +84,7 @@ resources:
         Name: Bucket
 
     VpcId:
-      Description: VPC Id
+      Description: The default VpcId
       Value: ${self:provider.environment.VPC_ID}
       Export:
         Name: VpcId

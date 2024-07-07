@@ -146,6 +146,10 @@ functions:
   createSchedule: dev-createSchedule (908 kB)
 ```
 
+Please Note: In order to execute these .http file endpoints, you need to install REST Client extension in VSCode.
+
+See: https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+
 Take the endpoints value and fill up the variable in the .http file.
 example:
 

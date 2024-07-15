@@ -95,27 +95,6 @@ Content-Type: application/json
 }
 
 ###################################################################
-### update user schedule (Invalid Time Period - Monday)
-PATCH {{updateScheduleBaseUrl}}/schedule/1
-Content-Type: application/json
-
-{
-  "schedule": {
-    "Monday": [{ "start": "INVALID:00", "end": "17:00" }],
-    "Tuesday": [{ "start": "13:00", "end": "17:00" }],
-    "Wednesday": [
-      { "start": "09:00", "end": "12:00" },
-      { "start": "13:00", "end": "17:00" }
-    ],
-    "Thursday": [{ "start": "09:00", "end": "17:00" }],
-    "Friday": [{ "start": "09:00", "end": "17:00" }],
-    "Saturday": [],
-    "Sunday": []
-  },
-  "timezone": "America/New_York"
-}
-
-###################################################################
 ### update user schedule (Endtime not provided - Wednesday)
 PATCH {{updateScheduleBaseUrl}}/schedule/1
 Content-Type: application/json
